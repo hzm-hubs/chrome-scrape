@@ -1,5 +1,9 @@
 console.log("popup ====== start");
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	console.log('indexdata',data)
+});
+
 function addClick(targetId, callBack = null) {
 	if (!document) {
 		return;
@@ -10,21 +14,26 @@ function addClick(targetId, callBack = null) {
 }
 
 function handleFeisu() {
-	console.log("点击");
+	console.log("点击",document.getElementById('fileInput'));
+	chrome.runtime.sendMessage({
+		id: "scrapePlugin",
+		action: "uploadFile",
+		data: 12
+	});
 }
 
 addClick("exportFeisu", handleFeisu);
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	if (request.action === "scrapedData") {
-	}
-});
+
+addClick("exportCsv", handleCsv);
+
+
 
 // 方法 2：从 chrome.storage 读取
 // chrome.storage.local.get("scrapedData", (result) => {
 //     if (result.scrapedData) console.log(result.scrapedData);
 //   });
 
-function exportCSV(data) {
+function handleCsv(data) {
 	let csv = "\n";
 	// csv += `"${data.pageTitle}","${data.pageUrl}"\n\n`;
 

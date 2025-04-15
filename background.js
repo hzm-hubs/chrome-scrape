@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(async (data) => {
 	console.log("action", data.action);
 	if (data.action == "getToken") {
 		getToken();
-	} else if (data.action == "upload") {
+	} else if (data.action == "uploadFile") {
 		uploadFile(data.data);
 	}
 });
@@ -69,18 +69,18 @@ async function getToken(params) {
 }
 
 async function uploadFile(file, authToken) {
+	const existValue = await chrome.storage.sync.get()
+	const formData = new FormData()
+	formData.append('file_type','xls')
+	formData.append('file_name','demo.xls')
+	formData.append('file','')
 	const data = await fetch("https://open.feishu.cn/open-apis/im/v1/files", {
 		method: "POST", // 指定方法为 POST
 		headers: {
-			Authorization: getToken(),
+			"Authorization": `Bearer ${existValue.accessToken}`,
 			"Content-Type": "multipart/form-data; boundary=---7MA4YWxkTrZu0gW", // 设置请求头（根据实际需求调整）
 		},
-		body: JSON.stringify({
-			file_type: "xls",
-			file_name: "测试视频.mp4",
-			duration: 3000,
-			file: "./demo.xls",
-		}),
+		body: formData,
 	});
 	console.log("upload =====", data);
 }
