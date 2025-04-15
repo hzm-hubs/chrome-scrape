@@ -1,13 +1,18 @@
 // 提取标题、链接、选中的文本
-var scrapeData = null;
+console.log("content-script ====== start");
 
-if (typeof scrapeData !== "function" || !scrapeData) {
-	scrapeData = async () => {
+chrome.runtime.sendMessage({
+	id: "scrapePlugin",
+	action: "getToken",
+});
+
+if (typeof scrapePlugin !== "function" || !scrapePlugin) {
+	scrapePlugin = async () => {
 		try {
-			const headings = Array.from(document.querySelectorAll("h1, h2")).map(
-				(el) => el.textContent.trim()
-			);
 			const tables = document.getElementsByTagName("table");
+			if (!tables?.length) {
+				return;
+			}
 			// 获取表头
 			const tableHeads = Array.from(
 				tables[1].getElementsByTagName("thead")?.[0].getElementsByTagName("th")
@@ -33,17 +38,16 @@ if (typeof scrapeData !== "function" || !scrapeData) {
 				}
 			});
 
-			const selectedText = window.getSelection().toString().trim();
+			// const selectedText = window.getSelection().toString().trim();
 
 			const excelData = {
 				tableHeads,
 				tableList,
-				selectedText,
 				pageTitle: document.title,
 				pageUrl: window.location.href,
 			};
 
-			exportCSVForFeishu(excelData);
+			exportCSV(excelData);
 
 			// 发送数据到 popup.js
 			chrome.runtime.sendMessage({
@@ -51,51 +55,11 @@ if (typeof scrapeData !== "function" || !scrapeData) {
 				data: excelData,
 			});
 		} catch (e) {
-			console.log("scrapePage error", e);
+			console.log("scrapePlugin error", e);
 		}
 
 		// chrome.storage.local.set({ scrapedData: data });
 	};
-}
-
-scrapeData(); // 执行抓取
-
-function exportCSVForFeishu(data) {
-	let csv = "\n";
-	// csv += `"${data.pageTitle}","${data.pageUrl}"\n\n`;
-
-	// csv += "Headings\n";
-	// data.headings.forEach(h => csv += `"${h}"\n`);
-
-	// 表头
-	csv += `\n${data.tableHeads.join(",")}\n`;
-	// 表内
-	data.tableList.forEach((l) => (csv += `${l.join(",")}\n`));
-
-	// 触发下载
-	const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement("a");
-	a.href = url;
-	a.download = `商品${new Date().toLocaleString()}.csv`;
-	a.click();
-}
-
-async function getAuthToken() {
-	const data = await fetch(
-		"https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
-		{
-			method: "POST", // 指定方法为 POST
-			headers: {
-				"Content-Type": "application/json", // 设置请求头（根据实际需求调整）
-			},
-			body: JSON.stringify({
-				app_id: "cli_a771e2da6b78d00e",
-				app_secret: "SzssAEpxhP6AYNq23H3cWFMIUVfEFWQl",
-			}), // 请求体数据（可传字符串、FormData 等）
-		}
-	);
-	console.log("TH", data);
 }
 
 async function uploadFile(file, authToken) {
