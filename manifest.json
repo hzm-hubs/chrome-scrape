@@ -7,9 +7,9 @@
 		"contextMenus", // 右键菜单
 		"activeTab", // 获取当前标签页
 		"scripting", // 注入脚本
-		"notifications",
+		"notifications", // 通知
 		"tabs",
-		"storage"
+		"storage" // 内存
 	],
 	"host_permissions": ["https://*/*", "http://*/*"],
 	"background": {
@@ -18,7 +18,7 @@
 	"content_scripts": [
 		{
 			"matches": ["https://*/*"],
-			"js": ["content-script.js"]
+			"js": ["content-script.js", "common/index.js"]
 		}
 	],
 	"action": {

@@ -5,12 +5,30 @@
 		<link href="./index.css" rel="stylesheet" />
 	</head>
 	<body>
-		<h3>数据抓取</h3>
-		<div id="output">
-			<div>开始抓取</div>
-			<div>输出到CSV</div>
-			<div>上传飞书</div>
+		<h1 id="pageTitle">数据抓取</h1>
+  
+		<div class="controls" style="display: flex; flex-direction: column;">
+		  <div class="status" id="status">准备抓取数据...</div>
+		  <div class="buttons">
+			<button id="doing" class="btn">开始抓取</button>
+			<button id="exportCSV" class="btn" style="background-color: #ff9800;">导出CSV</button>
+			<button id="exportFeisu" class="btn" style="background-color: #4CAF50;">上传到飞书</button>
+			<button id="settingsBtn" class="btn" style="background-color: rgba(107, 112, 117,1);">设置</button>
+		  </div>
 		</div>
-		<script src="./index.js"></script>
+		
+		<!-- 设置面板 -->
+		<div id="settingsPanel" style="display: none; margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+		  <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 16px;">飞书多维表格设置</h3>
+		  <div style="margin-bottom: 10px;">
+			<label for="feishuBaseUrl" style="display: block; margin-bottom: 5px;">多维表格URL:</label>
+			<input type="text" id="feishuBaseUrl" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如: https://mideqnf1p7d.feishu.cn/base/TAAsbKNniaMaodss84tcEQSun3f?table=tbllpvh8BykaNQBM&view=vewvd05oOX">
+		  </div>
+		  <div style="display: flex; justify-content: flex-end;">
+			<button id="saveSettingsBtn" class="btn" style="background-color: #2196F3;">保存设置</button>
+		  </div>
+
+		  <div id="result">加载中...</div>
 	</body>
+	<script src="index.js"></script>
 </html>

@@ -26,20 +26,21 @@ console.log("background ====== start");
 // });
 
 chrome.runtime.onMessage.addListener(async (data) => {
-	console.log("data", data);
+	console.log("action", data.action);
 	if (data.action == "getToken") {
-		let existValue = await chrome.storage.sync.get(); // 传不传key都一样
-		// console.log("1", existValue.accessToken);
-		if (existValue?.accessToken) {
-			return existValue.accessToken;
-		}
-		return getToken();
+		getToken();
+	} else if (data.action == "upload") {
+		uploadFile(data.data);
 	}
 });
 
 // 飞书的请求放在 content-script.js 中会显示跨域
 async function getToken(params) {
 	try {
+		const existValue = await chrome.storage.sync.get(); // 传不传key都一样
+		if (existValue?.accessToken) {
+			return existValue.accessToken;
+		}
 		console.log("---开放token 开始");
 		const backData = await fetch(
 			"https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
@@ -65,4 +66,21 @@ async function getToken(params) {
 	} catch (error) {
 		console.error("---开放token 失败：", error);
 	}
+}
+
+async function uploadFile(file, authToken) {
+	const data = await fetch("https://open.feishu.cn/open-apis/im/v1/files", {
+		method: "POST", // 指定方法为 POST
+		headers: {
+			Authorization: getToken(),
+			"Content-Type": "multipart/form-data; boundary=---7MA4YWxkTrZu0gW", // 设置请求头（根据实际需求调整）
+		},
+		body: JSON.stringify({
+			file_type: "xls",
+			file_name: "测试视频.mp4",
+			duration: 3000,
+			file: "./demo.xls",
+		}),
+	});
+	console.log("upload =====", data);
 }

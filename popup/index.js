@@ -1,6 +1,20 @@
-console.log("popup.js");
+console.log("popup ====== start");
+
+function addClick(targetId, callBack = null) {
+	if (!document) {
+		return;
+	}
+	document.getElementById(targetId).addEventListener("click", () => {
+		callBack && callBack();
+	});
+}
+
+function handleFeisu() {
+	console.log("点击");
+}
+
+addClick("exportFeisu", handleFeisu);
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	console.log("撒放");
 	if (request.action === "scrapedData") {
 	}
 });

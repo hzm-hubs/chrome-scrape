@@ -1,1 +1,33 @@
-body { font-family: Arial, sans-serif; padding: 6px;  width: 500px; max-height: 600px; overflow-y: auto; }
+body {
+	font-family: Arial, sans-serif;
+	padding: 15px;
+	width: 600px;
+	max-height: 600px;
+	overflow-y: auto;
+}
+h1 {
+	margin-bottom: 15px;
+	color: #333;
+}
+.controls {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+.status { color: #666; font-style: italic; margin-top: 10px; }
+.buttons {
+    display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;
+    .btn {
+        background-color: rgba(0, 100, 250,1);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all .2s;
+    }
+    .btn:hover {
+        opacity: 0.6;
+    }
+}
