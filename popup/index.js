@@ -1,37 +1,73 @@
 console.log("popup ====== start");
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	console.log('indexdata',data)
-});
+const appInfo = {
+	appId: "",
+	appSecretId: "",
+	tableUrl: "",
+};
 
-function addClick(targetId, callBack = null) {
+function setIninValue(targetId, value) {
+	document.getElementById(targetId).value = value;
+}
+
+function addListen(targetId, callBack = null, type = "click") {
 	if (!document) {
 		return;
 	}
-	document.getElementById(targetId).addEventListener("click", () => {
-		callBack && callBack();
-	});
+	switch (type) {
+		case "change":
+			document.getElementById(targetId).addEventListener("change", () => {
+				callBack && callBack();
+			});
+			break;
+		default: // click
+			document.getElementById(targetId).addEventListener("click", () => {
+				callBack && callBack();
+			});
+			break;
+	}
 }
 
-function handleFeisu() {
-	console.log("点击",document.getElementById('fileInput'));
+chrome.runtime.sendMessage(
+	{
+		action: "getAppInfo",
+	},
+	(data) => {
+		console.log("data134", data);
+	}
+);
+
+chrome.runtime.onMessage.addListener(async (data) => {
+	console.log("popup ==== receive", data);
+	if (data.action == "readAppInfo") {
+		for (let i in appInfo) {
+			appInfo[i] = data.data[i];
+			setIninValue(i, data.data[i]);
+		}
+		appInfo = data.data;
+	}
+});
+
+addListen("exportFeiSu", handleFeisu);
+
+addListen("exportCsv", handleCsv);
+
+function handleChange(key, value) {
+	console.log("value", key, value);
 	chrome.runtime.sendMessage({
 		id: "scrapePlugin",
-		action: "uploadFile",
-		data: 12
+		from: "popup",
+		action: "saveAppInfo",
+		data: {
+			...appInfo,
+			[key]: value,
+		},
 	});
 }
 
-addClick("exportFeisu", handleFeisu);
-
-addClick("exportCsv", handleCsv);
-
-
-
-// 方法 2：从 chrome.storage 读取
-// chrome.storage.local.get("scrapedData", (result) => {
-//     if (result.scrapedData) console.log(result.scrapedData);
-//   });
+["appId", "appSecretId", "tableUrlId"].map((it) =>
+	addListen(it, (e) => handleChange(it, e), "change")
+);
 
 function handleCsv(data) {
 	let csv = "\n";
@@ -49,4 +85,26 @@ function handleCsv(data) {
 	a.href = url;
 	a.download = `商品${new Date().toLocaleString()}.csv`;
 	a.click();
+}
+
+function handleFeisu() {
+	console.log("点击", document.getElementById("fileInput"));
+	chrome.runtime.sendMessage({
+		id: "scrapePlugin",
+		action: "uploadFile",
+		records: [
+			{
+				fields: {
+					名称: "茶叶",
+					详情: "https://juejin.cn/post/7485631488115228726",
+				},
+			},
+			{
+				fields: {
+					名称: "茶叶1",
+					详情: "https://juejin.cn/post/7485631488115228726",
+				},
+			},
+		],
+	});
 }

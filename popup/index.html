@@ -2,18 +2,22 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
+		<meta name="version" content="1.0.0" />
 		<link href="./index.css" rel="stylesheet" />
 	</head>
 	<body>
 		<h1 id="pageTitle">数据抓取</h1>
-  
 		<div class="controls" style="display: flex; flex-direction: column;">
+			<div class="appInfo">
+				<Input id="appId"  placeholder="请填写">
+				<Input id="appSecretId"  placeholder="请填写">
+				<Input id="tableUrlId" placeholder="请填写">
+			</div>
 		  <div class="status" id="status">准备抓取数据...</div>
-		  <input id="fileInput" type="file">
 		  <div class="buttons">
-			<button id="doing" class="btn">开始抓取</button>
+			<button id="start" class="btn">开始抓取</button>
 			<button id="exportCsv" class="btn" style="background-color: #ff9800;">导出CSV</button>
-			<button id="exportFeisu" class="btn" style="background-color: #4CAF50;">上传到飞书</button>
+			<button id="exportFeiSu" class="btn" style="background-color: #4CAF50;">上传到飞书</button>
 			<button id="settingsBtn" class="btn" style="background-color: #6b7075;">设置</button>
 		  </div>
 		</div>
