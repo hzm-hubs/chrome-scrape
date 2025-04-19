@@ -14,7 +14,7 @@ h1 {
 	justify-content: space-between;
 	margin-bottom: 15px;
 }
-.status { color: #666; font-style: italic; margin-top: 10px; }
+.status { color: #666; font-style: italic; margin-top: 10px; word-break: break-all;}
 .buttons {
     display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;
     .btn {

@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "数据抓取",
+	"name": "字段读取",
 	"version": "1.0.0",
 	"description": "从网页提取目标数据",
 	"permissions": ["tabs", "activeTab", "scripting", "notifications", "storage","runtime"],
@@ -12,6 +12,10 @@
 		{
 			"matches": ["https://*/*"],
 			"js": ["content-script.js", "common/index.js"]
+		},
+		{
+			"matches": ["https://myseller.taobao.com/home.htm/*"],
+			"js": ["content-script.js", "common/index.js","myseller/index.js"]
 		}
 	],
 	"action": {
