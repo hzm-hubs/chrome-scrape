@@ -20,6 +20,18 @@ function setInitValue(targetId, value) {
   document.getElementById(targetId).value = value;
 }
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("popup index ==== receive", request.action);
+  switch (request.action) {
+    case "updateTip":
+      setTipsContent(request.data);
+      break;
+    default:
+      break;
+  }
+  return true; //开启异步
+});
+
 // 由页面自己监听处理
 // chrome.runtime.sendMessage(
 // 	{
@@ -61,7 +73,7 @@ function addListen(targetId, callBack = null, type = "click") {
 }
 
 addListen("start", (e) => {
-  setTipsContent("开始读取数据……");
+  setTipsContent("字段读取中……");
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     // 向content script发送消息
     chrome.tabs.sendMessage(
@@ -70,9 +82,14 @@ addListen("start", (e) => {
         action: "readTableField",
       },
       function (response) {
-        console.log("读取数据结果", response);
-        setTipsContent(`获取到${response.tableList?.length}条数据`);
-        readResult = response;
+        if (chrome.runtime.lastError) {
+          setTipsContent("未获取到字段数据，请检查是否是目标网址");
+          readResult = response;
+        } else {
+          console.log("读取数据结果", response);
+          setTipsContent(`获取到${response?.tableList?.length || 0}条数据`);
+          readResult = response;
+        }
       }
     );
   });
@@ -87,12 +104,12 @@ function handleCsv() {
   let csv = "\n";
 
   // 表头
-  if (readResult.tableHeads?.length) {
+  if (readResult?.tableHeads?.length) {
     csv += `\n${readResult.tableHeads.join(",")}\n`;
   }
 
   // 表内
-  if (readResult.tableList?.length) {
+  if (readResult?.tableList?.length) {
     readResult.tableList.forEach((l) => (csv += `${l.join(",")}\n`));
   }
 

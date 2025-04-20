@@ -10,10 +10,6 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://*/*"],
-			"js": ["content-script.js", "common/index.js"]
-		},
-		{
 			"matches": ["https://myseller.taobao.com/home.htm/*"],
 			"js": ["content-script.js", "common/index.js","myseller/index.js"]
 		}
