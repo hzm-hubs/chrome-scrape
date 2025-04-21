@@ -1,27 +1,37 @@
 body {
 	font-family: Arial, sans-serif;
-	padding: 15px;
+	padding: 12px;
 	width: 600px;
 	max-height: 600px;
 	overflow-y: auto;
+    font-size: 12px;
 }
-h1 {
-	margin-bottom: 15px;
-	color: #333;
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.page-tips {
+    padding: 10px 0;
+    font-size: 14px;
+    color: #666; 
+    word-break: break-all;
+}
+.page-area {
+    padding: 0 10px;
 }
 .controls {
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 15px;
 }
-.status { color: #666; font-style: italic; margin-top: 10px; word-break: break-all;}
 .buttons {
     display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;
     .btn {
         background-color: rgba(0, 100, 250,1);
         color: white;
         border: none;
-        padding: 6px 12px;
+        padding: 4px 8px;
         border-radius: 4px;
         cursor: pointer;
         font-size: 14px;
@@ -29,5 +39,25 @@ h1 {
     }
     .btn:hover {
         opacity: 0.6;
+    }
+}
+.setting-area {
+    padding: 10px 0;
+
+    & > div {
+        margin: 0 0 10px 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .setting-label {
+        margin: 0 6px 0 0;
+        width: 70px;
+        text-align: right;
+    }
+
+    input {
+        width: 60%;
     }
 }

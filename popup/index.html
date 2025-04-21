@@ -6,34 +6,41 @@
 		<link href="./index.css" rel="stylesheet" />
 	</head>
 	<body>
-	<h1 id="pageTitle">字段读取</h1>
-		<div class="controls" style="display: flex; flex-direction: column;">
-			<div class="appInfo">
-				<Input id="appId"  placeholder="请填写 appId">
-				<Input id="appSecretId"  placeholder="请填写 appSecretId">
-				<Input id="tableUrlId" placeholder="请填写 多维表视图链接">
+		<div class="page-title" id="pageTitle">字段读取</div>
+		<div class="page-area">
+			<div class="page-tips" id="fieldScrape_tip">欢迎使用~~</div>
+			<div class="buttons">
+				<button id="start" class="btn">开始读取</button>
+				<button id="exportCsv" class="btn" style="background-color: #ff9800">
+					导出CSV
+				</button>
+				<button id="exportFeiSu" class="btn" style="background-color: #4caf50">
+					上传到飞书
+				</button>
+				<button id="settingsBtn" class="btn" style="background-color: #6b7075">
+					上传设置
+				</button>
 			</div>
-		  <div class="tips" id="fieldScrape_tip">欢迎使用~~</div>
-		  <div class="buttons">
-			<button id="start" class="btn">开始读取</button>
-			<button id="exportCsv" class="btn" style="background-color: #ff9800;">导出CSV</button>
-			<button id="exportFeiSu" class="btn" style="background-color: #4CAF50;">上传到飞书</button>
-			<button id="settingsBtn" class="btn" style="background-color: #6b7075;">上传设置</button>
-		  </div>
-		</div>
-		
-		<!-- 设置面板 -->
-		<div id="settingsPanel" style="display: none; margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
-		  <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 16px;">飞书多维表格设置</h3>
-		  <div style="margin-bottom: 10px;">
-			<label for="feishuBaseUrl" style="display: block; margin-bottom: 5px;">多维表格URL:</label>
-			<input type="text" id="feishuBaseUrl" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如: https://mideqnf1p7d.feishu.cn/base/TAAsbKNniaMaodss84tcEQSun3f?table=tbllpvh8BykaNQBM&view=vewvd05oOX">
-		  </div>
-		  <div style="display: flex; justify-content: flex-end;">
-			<button id="saveSettingsBtn" class="btn" style="background-color: #2196F3;">保存设置</button>
-		  </div>
 
-		  <div id="result">加载中...</div>
+			<!-- 设置面板 -->
+			<div id="settingsPanel" class="setting-area">
+				<div>
+					<div class="setting-label">应用Id</div>
+					<input id="appId" placeholder="请填写 appId" />
+				</div>
+				<div>
+					<div class="setting-label">应用密钥</div>
+					<input id="appSecretId" placeholder="请填写 appSecretId" />
+				</div>
+				<div>
+					<div class="setting-label">多维表链接</div>
+					<input id="tableUrlId" placeholder="请填写" />
+				</div>
+			</div>
+
+			<!-- 展示结果 -->
+			<!-- <div id="result">加载中...</div> -->
+		</div>
 	</body>
 	<script src="index.js"></script>
 </html>
