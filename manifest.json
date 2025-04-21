@@ -17,7 +17,7 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://*/*", "http://*/*"],
+			"matches": ["https://myseller.taobao.com/home.htm/*"],
 			"js": ["content-script.js", "common/index.js", "myseller/index.js"]
 		}
 	],

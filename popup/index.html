@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="version" content="1.0.0" />
-		<link href="./index.css" rel="stylesheet" />
-	</head>
-	<body>
-		<div class="page-title" id="pageTitle">字段读取</div>
-		<div class="page-area">
-			<div class="page-tips" id="fieldScrape_tip">欢迎使用~~</div>
-			<div class="buttons">
-				<button id="start" class="btn">开始读取</button>
-				<button id="exportCsv" class="btn" style="background-color: #ff9800">
-					导出CSV
-				</button>
-				<button id="exportFeiSu" class="btn" style="background-color: #4caf50">
-					上传到飞书
-				</button>
-				<button id="settingsBtn" class="btn" style="background-color: #6b7075">
-					上传设置
-				</button>
-			</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="version" content="1.0.0" />
+    <link href="./index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="page-title" id="pageTitle">字段读取</div>
+    <div class="page-area">
+      <div class="page-tips" id="fieldScrape_tip">欢迎使用~~</div>
+      <div class="buttons">
+        <button id="start" class="btn">开始读取</button>
+        <button id="exportCsv" class="btn" style="background-color: #ff9800">
+          导出CSV
+        </button>
+        <button id="exportFeiSu" class="btn" style="background-color: #4caf50">
+          上传到飞书
+        </button>
+        <button id="settingsBtn" class="btn" style="background-color: #6b7075">
+          上传设置
+        </button>
+      </div>
 
-			<!-- 设置面板 -->
-			<div id="settingsPanel" class="setting-area">
-				<div>
-					<div class="setting-label">应用Id</div>
-					<input id="appId" placeholder="请填写 appId" />
-				</div>
-				<div>
-					<div class="setting-label">应用密钥</div>
-					<input id="appSecretId" placeholder="请填写 appSecretId" />
-				</div>
-				<div>
-					<div class="setting-label">多维表链接</div>
-					<input id="tableUrlId" placeholder="请填写" />
-				</div>
-			</div>
+      <!-- 设置面板 -->
+      <div id="settingsPanel" class="setting-area">
+        <div>
+          <div class="setting-label">APP ID</div>
+          <input id="appId" placeholder="应用唯一的 ID 标识" />
+        </div>
+        <div>
+          <div class="setting-label">APP Secret</div>
+          <input id="appSecretId" placeholder="应用的密钥" />
+        </div>
+        <div>
+          <div class="setting-label">多维表链接</div>
+          <input id="tableUrlId" placeholder="请填写" />
+        </div>
+      </div>
 
-			<!-- 展示结果 -->
-			<!-- <div id="result">加载中...</div> -->
-		</div>
-	</body>
-	<script src="index.js"></script>
+      <!-- 展示结果 -->
+      <!-- <div id="result">加载中...</div> -->
+    </div>
+  </body>
+  <script src="index.js"></script>
 </html>

@@ -76,6 +76,7 @@ async function getToken(appInfo) {
     return tempAuth.tenant_access_token;
   } catch (error) {
     console.error("---开放token 失败：", error);
+    createTip("获取ai应用鉴权失败");
     return "";
   }
 }
@@ -99,6 +100,7 @@ async function getTableFields({ accessToken, appToken, tableId, viewId }) {
     // 没有 window 属性
     // window.setTipsContent(messageObj["AuthExpired"]);
     chrome.storage.local.remove("accessToken");
+    return false;
   }
   if (backData?.data?.items?.length) {
     result = backData.data.items.map((it) => it.field_name);
@@ -108,6 +110,9 @@ async function getTableFields({ accessToken, appToken, tableId, viewId }) {
 
 async function uploadSyncTable(data) {
   const accessToken = await getToken(data.appInfo);
+  if (!accessToken) {
+    return;
+  }
   const tableUrlInfo = new URL(data.appInfo.tableUrlId);
   const appToken = tableUrlInfo.pathname.split("/base/")[1]; // 多维表唯一Id
   const tableId = tableUrlInfo.searchParams.get("table"); // 多维表格数据表的唯一标识
@@ -118,6 +123,10 @@ async function uploadSyncTable(data) {
     tableId,
     viewId,
   });
+
+  if (!tableFields) {
+    return;
+  }
 
   let records = [];
 
@@ -155,6 +164,9 @@ async function uploadSyncTable(data) {
   if (backData.code == 99991663) {
     createTip(messageObj["AuthExpired"]);
     chrome.storage.local.remove("accessToken");
+  } else if (backData.code == 0) {
+    createTip("数据已成功上传到您的多维文档中~");
+  } else {
+    createTip(backData.msg);
   }
-  createTip(backData.msg);
 }
