@@ -2,8 +2,8 @@ console.log("popup ====== start");
 
 const appInfo = {
   appId: "",
-  appSecretId: "",
-  tableUrlId: "",
+  documentLink: "",
+  cozeToken: "",
 };
 
 let readResult = "";
@@ -14,7 +14,6 @@ Object.defineProperty(observeObj, "loading", {
     return loading;
   },
   set: function (newV) {
-    console.log("newV", newV);
     loading = newV;
   },
 });
@@ -27,10 +26,6 @@ function setTipsContent(message) {
 }
 
 window["setTipsContent"] = setTipsContent;
-
-function setInitValue(targetId, value) {
-  document.getElementById(targetId).value = value;
-}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("popup index ==== receive", request.action);
@@ -56,7 +51,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // 		console.log("response", response);
 // 	}
 // );
-
+function setInitValue(targetId, value) {
+  document.getElementById(targetId).value = value;
+}
 // 读取缓存信息
 chrome.storage.local.get("appInfo", (result) => {
   if (chrome.runtime.lastError) {
@@ -167,6 +164,18 @@ function handleFeisu() {
     setTipsContent("未读取到可用数据~");
     return;
   }
+  if (!appInfo.appId) {
+    setTipsContent("请填写app_id~");
+    return;
+  }
+  if (!appInfo.documentLink) {
+    setTipsContent("请填写文档链接~");
+    return;
+  }
+  if (!appInfo.cozeToken) {
+    setTipsContent("请填写授权码~");
+    return;
+  }
   if (observeObj.loading) {
     return;
   }
@@ -187,6 +196,6 @@ function handleChange(key, value) {
   });
 }
 
-["appId", "appSecretId", "tableUrlId"].map((it) =>
+["appId", "documentLink", "cozeToken"].map((it) =>
   addListen(it, (e) => handleChange(it, e), "change")
 );
