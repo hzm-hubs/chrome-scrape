@@ -68,16 +68,26 @@ let timer = null;
 let timeout = 20;
 async function getPageData(tableList) {
   // 前一版本 asiYysdGuS （常规） asiYysdGuW（选中）
-  const nodeSelectors = document.getElementsByClassName("asiYysqiuQ");
-  // 当前选中的页码
-  const curPageNum =
-    document.getElementsByClassName("asiYysqiuU")[0].textContent;
-  getCurrentTables(tableList);
+  const nodeSelectors = document.querySelectorAll("[mxv=pageSizes]");
+  if (!nodeSelectors.length) {
+    return;
+  }
+  const pagesNode = nodeSelectors[0].getElementsByTagName("a");
+  let maxClassValue = 0;
+  let curPageNum = 0;
+  Array.from(pagesNode).forEach((it, index) => {
+    // 根据css样式长度，找到当前选中的页码
+    if (it.classList.length > maxClassValue) {
+      maxClassValue = it.classList.length;
+      curPageNum = it.textContent;
+    }
+  });
+  console.log("当前选中页码", curPageNum);
   if (curPageNum == 1) {
     getCurrentTables(tableList);
   }
-  for (let i = curPageNum == 1 ? 1 : 0; i < nodeSelectors.length; i++) {
-    nodeSelectors[i].click();
+  for (let i = curPageNum == 1 ? 1 : 0; i < pagesNode.length; i++) {
+    pagesNode[i].click();
     await new Promise((resolve) => {
       timer = setInterval(() => {
         if (
@@ -99,8 +109,11 @@ function getCurrentTables(result) {
   lastTableContent = JSON.stringify(getTargetTbody()?.innerHTML);
   Array.from(getTargetTbody().getElementsByTagName("tr")).forEach(
     (it, index) => {
-      // 排除子项下方操作项
-      if (Array.from(it.children).length > 2) {
+      // 排除子项下方操作项，并且不包含合计项
+      if (
+        Array.from(it.children).length > 2 &&
+        !it.childNodes[0].textContent.includes("合计")
+      ) {
         const detailUrl =
           it.getElementsByTagName("a")?.[0]?.getAttribute("href") || "";
         const trInfo = Array.from(it.children).map((item) => {
