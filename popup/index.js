@@ -98,15 +98,12 @@ addListen("start", (e) => {
         action: "readTableField",
       }
       // function (response) {
-      // 	if (chrome.runtime.lastError) {
-      // 		console.log("读取数据失败");
-      // 		setTipsContent("未获取到字段数据，请检查是否是目标网址");
-      // 		readResult = response;
-      // 	} else {
-      // 		console.log("读取数据结果", response);
-      // 		setTipsContent(`获取到${response?.tableList?.length || 0}条数据`);
-      // 		readResult = response;
-      // 	}
+      //   if (chrome.runtime.lastError) {
+      //     console.log("读取数据失败");
+      //     setTipsContent("未获取到字段数据，请检查是否是目标网址");
+      //     readResult = response;
+      //     observeObj.loading = false;
+      //   }
       // }
     );
   });

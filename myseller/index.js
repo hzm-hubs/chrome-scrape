@@ -54,12 +54,16 @@ function setupTableObserver(tableList) {
   }
 }
 
-function getTargetTbody() {
-  return (
-    document
-      ?.getElementsByTagName("table")[2]
-      ?.getElementsByTagName("tbody")[0] || null
-  );
+function getTargetTable(type = "head") {
+  const tables = document
+    .querySelectorAll(
+      'div[mxv^="biz,params,reportFilters,detailMap,tabMap"]'
+    )[0]
+    .getElementsByTagName("table");
+  if (type == "tbody") {
+    return tables[1] || null;
+  }
+  return tables[0] || null;
 }
 
 // 判断是否还有可以获取的内容
@@ -92,7 +96,8 @@ async function getPageData(tableList) {
       timer = setInterval(() => {
         if (
           timeout == 0 ||
-          lastTableContent !== JSON.stringify(getTargetTbody()?.innerHTML)
+          lastTableContent !==
+            JSON.stringify(getTargetTable("tbody")?.innerHTML)
         ) {
           clearInterval(timer);
           timer = null;
@@ -106,8 +111,8 @@ async function getPageData(tableList) {
 }
 
 function getCurrentTables(result) {
-  lastTableContent = JSON.stringify(getTargetTbody()?.innerHTML);
-  Array.from(getTargetTbody().getElementsByTagName("tr")).forEach(
+  lastTableContent = JSON.stringify(getTargetTable("tbody")?.innerHTML);
+  Array.from(getTargetTable("tbody").getElementsByTagName("tr")).forEach(
     (it, index) => {
       // 排除子项下方操作项，并且不包含合计项
       if (
@@ -116,10 +121,14 @@ function getCurrentTables(result) {
       ) {
         const detailUrl =
           it.getElementsByTagName("a")?.[0]?.getAttribute("href") || "";
-        const trInfo = Array.from(it.children).map((item) => {
-          // 双引号使其表内换行
-          return '"' + item.innerText + '"';
-        });
+        const trInfo = Array.from(it.children)
+          .map((item) => {
+            // 双引号使其表内换行 innerText 可以保留换行
+            return (
+              '"' + item.innerText.replace(/[\uE000-\uF8FF]/g, "").trim() + '"'
+            );
+          })
+          .filter((it) => it);
         trInfo.splice(2, 0, detailUrl);
         result.push({
           fields: trInfo,
@@ -131,15 +140,19 @@ function getCurrentTables(result) {
 
 async function fieldScrape(callBack) {
   try {
-    const tables = document.getElementsByTagName("table");
-    if (!tables?.length) {
+    // 获取表头
+    const targetHead = getTargetTable();
+
+    if (!targetHead) {
       throw "no table data";
     }
 
-    // 获取表头
+    targetHead.scrollIntoView();
+
     const tableHeads = Array.from(
-      tables[1].getElementsByTagName("thead")?.[0].getElementsByTagName("th")
+      targetHead.getElementsByTagName("thead")?.[0].getElementsByTagName("th")
     ).map((it) => it.innerText.split("\n")[0]);
+
     tableHeads.splice(2, 0, "详情页");
 
     // 设置表数据
