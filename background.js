@@ -13,7 +13,7 @@ function createTip(msg = "操作失败") {
   // });
   chrome.runtime.sendMessage({
     from: "background",
-    action: "updateTip",
+    action: "updateTipContent",
     data: msg,
   });
 }

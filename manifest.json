@@ -9,7 +9,9 @@
 		"scripting",
 		"notifications",
 		"storage",
-		"runtime"
+		"runtime",
+		"webRequest",
+		"debugger"
 	],
 	"host_permissions": ["https://*/*", "http://*/*"],
 	"background": {
@@ -21,8 +23,8 @@
 			"js": ["content-script.js", "common/index.js", "myseller/index.js"]
 		},
 		{
-			"matches": ["https://sycm.taobao.com/cc/customer/trip?*"],
-			"js": ["content-script.js", "common/index.js", "sycm/trip.js"]
+			"matches": ["https://one.alimama.com/index.html*"],
+			"js": ["content-script.js", "common/index.js", "myseller/index.js"]
 		}
 	],
 	"action": {

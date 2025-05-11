@@ -1,3 +1,4 @@
+// 千牛
 console.log("myseller ====== start");
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
@@ -56,9 +57,7 @@ function setupTableObserver(tableList) {
 
 function getTargetTable(type = "head") {
   const tables = document
-    .querySelectorAll(
-      'div[mxv^="biz,params,reportFilters,detailMap,tabMap"]'
-    )[0]
+    .querySelectorAll('div[mxv^="biz,params"]')[0]
     .getElementsByTagName("table");
   if (type == "tbody") {
     return tables[1] || null;
@@ -72,6 +71,7 @@ let timer = null;
 let timeout = 20;
 async function getPageData(tableList) {
   // 前一版本 asiYysdGuS （常规） asiYysdGuW（选中）
+  // 现在版本 asiYyskwuM         asiYyskwuQ
   const nodeSelectors = document.querySelectorAll("[mxv=pageSizes]");
   if (!nodeSelectors.length) {
     return;
@@ -91,6 +91,11 @@ async function getPageData(tableList) {
     getCurrentTables(tableList);
   }
   for (let i = curPageNum == 1 ? 1 : 0; i < pagesNode.length; i++) {
+    chrome.runtime.sendMessage({
+      from: "myseller",
+      action: "updateTipContent",
+      data: `正在读取第${i + 1}页数……`,
+    });
     pagesNode[i].click();
     await new Promise((resolve) => {
       timer = setInterval(() => {
@@ -124,9 +129,7 @@ function getCurrentTables(result) {
         const trInfo = Array.from(it.children)
           .map((item) => {
             // 双引号使其表内换行 innerText 可以保留换行
-            return (
-              '"' + item.innerText.replace(/[\uE000-\uF8FF]/g, "").trim() + '"'
-            );
+            return item.innerText.replace(/[\uE000-\uF8FF]/g, "").trim();
           })
           .filter((it) => it);
         trInfo.splice(2, 0, detailUrl);

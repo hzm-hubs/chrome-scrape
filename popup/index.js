@@ -1,12 +1,13 @@
 console.log("popup ====== start");
 
+// 存储设置信息
 const appInfo = {
-  appId: "",
-  documentLink: "",
-  cozeToken: "",
+  appId: "", // 应用唯一标识
+  documentLink: "", // 文档链接
+  cozeToken: "", // 授权码
 };
 
-let readResult = "";
+// 判断执行状态
 const observeObj = {};
 let loading = false;
 Object.defineProperty(observeObj, "loading", {
@@ -17,24 +18,51 @@ Object.defineProperty(observeObj, "loading", {
     loading = newV;
   },
 });
-let curAction = "";
+
+// 检查是否是目标网页
+function checkIfTargetPage(url) {
+  return ["https://myseller.taobao.com"].some((it) => url.startsWith(it));
+}
+
+// 判断当前展示页面
+let isTargetPage = false;
+chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+  const currentTab = tabs[0];
+  const currentUrl = currentTab.url;
+  isTargetPage = checkIfTargetPage(currentUrl); // 你的判断逻辑
+  if (!isTargetPage) {
+    observeObj.loading = true;
+    setTipsContent("当前页面不支持使用~");
+    document.getElementById("buttonArea").classList.add("hide-element");
+  } else {
+    // 正常显示插件内容
+    setTipsContent("欢迎使用~");
+  }
+});
 
 function setTipsContent(message) {
   if (document) {
-    document.getElementById("fieldScrape_tip").innerText = message;
+    document.getElementById("contentTip").innerText = message;
   }
 }
 
-window["setTipsContent"] = setTipsContent;
+let readResult = ""; // 阅读结果
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("popup index ==== receive", request.action);
   switch (request.action) {
-    case "updateTip":
+    case "updateTipContent":
       if (observeObj.loading) {
         observeObj.loading = false;
       }
       setTipsContent(request.data);
+      break;
+    case "mysellerBackData":
+      setTipsContent(`共获取到${request?.data.tableList?.length || 0}条数据`);
+      readResult = request.data;
+      if (observeObj.loading) {
+        observeObj.loading = false;
+      }
       break;
     default:
       break;
@@ -42,18 +70,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true; //开启异步
 });
 
-// 由页面自己监听处理
-// chrome.runtime.sendMessage(
-// 	{
-// 		action: "getAppInfo",
-// 	},
-// 	(response) => {
-// 		console.log("response", response);
-// 	}
-// );
+// 设置初始值
 function setInitValue(targetId, value) {
   document.getElementById(targetId).value = value;
 }
+
 // 读取缓存信息
 chrome.storage.local.get("appInfo", (result) => {
   if (chrome.runtime.lastError) {
@@ -73,6 +94,11 @@ function addListen(targetId, callBack = null, type = "click") {
   switch (type) {
     case "change":
       document.getElementById(targetId).addEventListener("change", (e) => {
+        callBack && callBack(e.target.value);
+      });
+      break;
+    case "negation":
+      document.getElementById(targetId).addEventListener("click", (e) => {
         callBack && callBack(e.target.value);
       });
       break;
@@ -109,19 +135,11 @@ addListen("start", (e) => {
   });
 });
 
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.action == "mysellerBackData") {
-    setTipsContent(`共获取到${request?.data.tableList?.length || 0}条数据`);
-    readResult = request.data;
-    if (observeObj.loading) {
-      observeObj.loading = false;
-    }
-  }
-});
-
 addListen("exportFeiSu", handleFeisu);
 
 addListen("exportCsv", handleCsv);
+
+addListen("settings", handleSetting);
 
 function handleCsv() {
   if (!readResult.tableList?.length) {
@@ -132,7 +150,7 @@ function handleCsv() {
     return;
   }
   observeObj.loading = true;
-  setTipsContent("开始整理数据…");
+  setTipsContent("开始整理数据……");
   let csv = "\n";
   // 表头
   if (readResult?.tableHeads?.length) {
@@ -152,7 +170,7 @@ function handleCsv() {
   a.href = url;
   a.download = `商品${new Date().toLocaleString()}.csv`;
   a.click();
-  setTipsContent("表格数据导出成功");
+  setTipsContent("表格数据导出成功!");
   observeObj.loading = false;
 }
 
@@ -177,13 +195,25 @@ function handleFeisu() {
     return;
   }
   observeObj.loading = true;
-  setTipsContent("开始整理数据…");
+  setTipsContent("开始整理数据……");
   chrome.runtime.sendMessage({
     id: "fieldScrape",
     action: "uploadFile",
     appInfo,
     data: readResult,
   });
+}
+
+function handleSetting() {
+  const triggerEle = document.getElementById("settings");
+  const targetEle = document.getElementById("settingsPanel");
+  if (targetEle.classList.contains("hide-element")) {
+    targetEle.classList.remove("hide-element");
+    triggerEle.innerText = "收起设置";
+  } else {
+    targetEle.classList.add("hide-element");
+    triggerEle.innerText = "打开设置";
+  }
 }
 
 function handleChange(key, value) {

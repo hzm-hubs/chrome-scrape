@@ -6,24 +6,24 @@
     <link href="./index.css" rel="stylesheet" />
   </head>
   <body>
-    <div class="page-title" id="pageTitle">字段读取</div>
+    <div id="pageTitle" class="page-title">字段读取</div>
     <div class="page-area">
-      <div class="page-tips" id="fieldScrape_tip">欢迎使用~</div>
-      <div class="buttons">
+      <div id="contentTip" class="page-tips"></div>
+      <div id="buttonArea" class="buttons">
         <button id="start" class="btn">开始读取</button>
         <button id="exportCsv" class="btn" style="background-color: #ff9800">
           导出CSV
         </button>
         <button id="exportFeiSu" class="btn" style="background-color: #4caf50">
-          上传到飞书
+          上传飞书
         </button>
-        <button id="settingsBtn" class="btn" style="background-color: #6b7075">
-          上传设置
+        <button id="settings" class="btn" style="background-color: #6b7075">
+          打开设置
         </button>
       </div>
 
       <!-- 设置面板 -->
-      <div id="settingsPanel" class="setting-area">
+      <div id="settingsPanel" class="setting-area hide-element">
         <div>
           <div class="setting-label">授权码</div>
           <input id="cozeToken" placeholder="" />
@@ -37,9 +37,6 @@
           <input id="documentLink" placeholder="" />
         </div>
       </div>
-
-      <!-- 展示结果 -->
-      <!-- <div id="result">加载中...</div> -->
     </div>
   </body>
   <script src="index.js"></script>
