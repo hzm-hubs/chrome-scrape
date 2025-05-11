@@ -115,23 +115,29 @@ addListen("start", (e) => {
     return;
   }
   observeObj.loading = true;
-  setTipsContent("数据读取中……");
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     // 向content script发送消息
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      {
-        action: "readTableField",
+    try {
+      if (!tabs[0].id) {
+        throw "连接失败，请尝试关闭浮窗刷新页面";
       }
-      // function (response) {
-      //   if (chrome.runtime.lastError) {
-      //     console.log("读取数据失败");
-      //     setTipsContent("未获取到字段数据，请检查是否是目标网址");
-      //     readResult = response;
-      //     observeObj.loading = false;
-      //   }
-      // }
-    );
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        {
+          action: "readTableField",
+        }
+        // function (response) {
+        //   console.log("response", response);
+        //   if (chrome.runtime.lastError) {
+        //     // setTipsContent(chrome.runtime.lastError.message);
+        //     // readResult = response;
+        //     // observeObj.loading = false;
+        //   }
+        // }
+      );
+    } catch (e) {
+      setTipsContent(e);
+    }
   });
 });
 

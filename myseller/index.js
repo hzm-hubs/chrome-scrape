@@ -4,10 +4,11 @@ console.log("myseller ====== start");
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   console.log("myseller ====== receive", request.action);
   if (request.action == "readTableField") {
-    // 这里使用 await 会终止message port 链接，回调函数里有 await 也不行。改到通过sendMessage回传
+    // 这里使用 await 会终止message port 链接，回调函数里有 await 也不行。
+    // 使用sendMessage回传必须需要没有异步
     fieldScrape();
   }
-  return true;
+  // return true;
 });
 
 let mysellerObserver = "";
@@ -126,12 +127,10 @@ function getCurrentTables(result) {
       ) {
         const detailUrl =
           it.getElementsByTagName("a")?.[0]?.getAttribute("href") || "";
-        const trInfo = Array.from(it.children)
-          .map((item) => {
-            // 双引号使其表内换行 innerText 可以保留换行
-            return item.innerText.replace(/[\uE000-\uF8FF]/g, "").trim();
-          })
-          .filter((it) => it);
+        const trInfo = Array.from(it.children).map((item) => {
+          // 双引号使其表内换行 innerText 可以保留换行
+          return item.innerText.replace(/[\uE000-\uF8FF]/g, "").trim();
+        });
         trInfo.splice(2, 0, detailUrl);
         result.push({
           fields: trInfo,
