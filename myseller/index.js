@@ -19,7 +19,7 @@ function setupTableObserver(tableList) {
   const targetNode = document.getElementsByTagName("tbody")[0] || null;
   if (targetNode) {
     const config = { attributes: false, childList: true, subtree: true };
-    // let mutationPending = false;
+    let mutationPending = false;
     const callback = (mutationsList) => {
       // Use traditional 'for loops' for IE 11
       console.log("更新", mutationsList);
@@ -34,15 +34,15 @@ function setupTableObserver(tableList) {
         }
       }
 
-      // if (!mutationPending) {
-      // 	mutationPending = true;
-      // 	// 放在微任务队列末尾，只执行一次
-      // 	queueMicrotask(() => {
-      // 		mutationPending = false;
-      // 		// 比如读取当前 DOM 状态，或者触发某个操作
-      // 		console.log("表格变动结束，执行处理逻辑");
-      // 	});
-      // }
+      if (!mutationPending) {
+        mutationPending = true;
+        // 放在微任务队列末尾，只执行一次
+        queueMicrotask(() => {
+          mutationPending = false;
+          // 比如读取当前 DOM 状态，或者触发某个操作
+          console.log("表格变动结束，执行处理逻辑");
+        });
+      }
     };
 
     mysellerObserver = new MutationObserver(callback);
@@ -108,7 +108,9 @@ async function getPageData(tableList) {
           clearInterval(timer);
           timer = null;
           timeout = 20;
-          resolve(getCurrentTables(tableList));
+          setTimeout(() => {
+            resolve(getCurrentTables(tableList));
+          }, 3000);
         }
         --timeout;
       }, 1000);
