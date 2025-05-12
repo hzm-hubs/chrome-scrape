@@ -20,11 +20,11 @@
 	"content_scripts": [
 		{
 			"matches": ["https://myseller.taobao.com/home.htm/*"],
-			"js": ["content-script.js", "common/index.js", "myseller/index.js"]
+			"js": [ "common/index.js","myseller/index.js","content-script.js"]
 		},
 		{
 			"matches": ["https://one.alimama.com/index.html*"],
-			"js": ["content-script.js", "common/index.js", "myseller/index.js"]
+			"js": ["common/index.js",  "myseller/index.js","content-script.js"]
 		}
 	],
 	"action": {

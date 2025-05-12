@@ -142,7 +142,7 @@ function getCurrentTables(result) {
   );
 }
 
-async function fieldScrape(callBack) {
+async function scrapeMysellerData(callBack) {
   try {
     // 获取表头
     const targetHead = getTargetTable();

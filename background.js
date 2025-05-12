@@ -1,9 +1,5 @@
 // 主要与chrome进行后台交互
 
-const messageObj = {
-  AuthExpired: "授权码失效，请重新操作",
-};
-
 function createTip(msg = "操作失败") {
   // chrome.notifications.create("fieldScrape_notification", {
   //   type: "basic",
