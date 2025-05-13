@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "uploadFile":
       handleRun({
         appInfo: request.appInfo,
-        tableInfo: request.data,
+        collectData: request.data,
       });
       break;
     // case "getAppInfo":
@@ -41,7 +41,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true; //开启异步
 });
 
-// 飞书的请求放在 content-script.js 中会显示跨域
 async function getToken(appInfo) {
   try {
     console.log("---开放token 开始");
@@ -78,6 +77,9 @@ async function getToken(appInfo) {
 }
 
 async function handleRun(params) {
+  const tableData = params.collectData.data;
+  const otherParams = Object.assign(params.collectData);
+  delete otherParams.data;
   let backData = await fetch(`https://api.coze.cn/v1/workflow/run`, {
     method: "POST", // 指定方法为 POST
     headers: {
@@ -88,8 +90,8 @@ async function handleRun(params) {
         input: {
           app_id: params.appInfo.appId,
           documentLink: params.appInfo.documentLink,
-          tableHeads: params.tableInfo.tableHeads,
-          tableList: params.tableInfo.tableList,
+          ...tableData,
+          ...otherParams,
         },
       },
       workflow_id: "7496441633937866793",
